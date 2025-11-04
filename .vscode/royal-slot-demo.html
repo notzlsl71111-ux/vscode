@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>🎰 Royal Slot Demo</title>
+  <style>
+    body {
+      font-family: "Comic Sans MS", cursive, sans-serif;
+      text-align: center;
+      background: linear-gradient(120deg, #ffeaa7, #fab1a0);
+      color: #333;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #d63031;
+      text-shadow: 2px 2px #fff;
+      margin-bottom: 10px;
+    }
+
+    #slot-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .reel {
+      background: white;
+      border-radius: 10px;
+      margin: 5px;
+      width: 80px;
+      height: 80px;
+      line-height: 80px;
+      font-size: 40px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    button {
+      background: #74b9ff;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #0984e3;
+      transform: scale(1.05);
+    }
+
+    #resultText {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    #scoreDisplay {
+      margin-top: 10px;
+      font-size: 20px;
+      color: #2d3436;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎰 Royal Slot Demo</h1>
+  <p>หมุนสล็อตแนวผลไม้ 🍒🍋🍉⭐️💎</p>
+
+  <div id="slot-container"></div>
+  <button id="spinBtn">SPIN 🎲</button>
+
+  <div id="resultText"></div>
+  <div id="scoreDisplay">⭐️ คะแนน: 0</div>
+
+  <script>
+    const fruits = ["🍒", "🍋", "🍉", "⭐️", "💎"];
+    const container = document.getElementById("slot-container");
+    const spinBtn = document.getElementById("spinBtn");
+    const resultText = document.getElementById("resultText");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    let score = 0;
+
+    // ฟังก์ชันสร้างสล็อตเริ่มต้น
+    function setupSlots() {
+      for (let i = 0; i < 5; i++) {
+        const div = document.createElement("div");
+        div.className = "reel";
+        div.textContent = fruits[Math.floor(Math.random() * fruits.length)];
+        container.appendChild(div);
+      }
+    }
+
+    // ฟังก์ชันหมุนสล็อต
+    function spin() {
+      const reels = [];
+      const slots = document.querySelectorAll(".reel");
+
+      slots.forEach((slot, i) => {
+        const symbol = fruits[Math.floor(Math.random() * fruits.length)];
+        reels.push(symbol);
+
+        // แอนิเมชันหมุน
+        slot.style.transform = "rotateX(360deg)";
+        setTimeout(() => {
+          slot.textContent = symbol;
+          slot.style.transform = "rotateX(0deg)";
+        }, 300 * i);
+      });
+
+      setTimeout(() => checkResult(reels), 1600);
+    }
+
+    // ฟังก์ชันตรวจผลลัพธ์
+    function checkResult(reels) {
+      const counts = {};
+      reels.forEach(f => counts[f] = (counts[f] || 0) + 1);
+      const max = Math.max(...Object.values(counts));
+      let won = 0;
+      if (max >= 3) {
+        won = max === 3 ? 300 : max === 4 ? 600 : 1000;
+        score += won;
+        resultText.innerText = `🎉 ได้รูปเหมือนกัน ${max} รูป! +${won} คะแนน`;
+      } else {
+        resultText.innerText = "😢 หมุนใหม่อีกครั้ง!";
+      }
+      scoreDisplay.innerText = `⭐️ คะแนน: ${score}`;
+    }
+
+    spinBtn.onclick = spin;
+    setupSlots();
+  </script>
+</body>
+</html>
